@@ -12,3 +12,10 @@ printfn "sample: %A" (Gen.constant 42 |> Gen.map (string) |> Gen.sample 2 2)
 printfn "sample: %A" (Gen.constant 42 |> Gen.map Gen.constant |> Gen.sample 2 2)
 
 printfn "sample: %A" (Gen.constant 42 |> (fun g -> gen.Bind (g, Gen.constant)) |> Gen.sample 2 2)
+
+let map f g = Gen.map f g
+
+let flatMap f g = gen.Bind (g, f)
+
+printfn "sample: %A" (Gen.constant 42 |> map Gen.constant |> Gen.sample 2 2)
+printfn "sample: %A" (Gen.constant 42 |> flatMap Gen.constant |> Gen.sample 2 2)
