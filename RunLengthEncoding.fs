@@ -4,6 +4,14 @@ open System
 open Xunit
 open FsCheck
 
+////////////////////////////////////////////////////////////////////////////////
+// Implementation code
+////////////////////////////////////////////////////////////////////////////////
+
+// e.g.
+// ['a'; 'a'; 'a'; 'b'; 'a'; 'a'; 'x'; 'x'; 'x']
+// [(3, 'a'); (1, 'b'); (2, 'a'); (3, 'x')]
+
 let rec runLengthEnc (xs: 'a list): (int * 'a) list =
   match xs with
   | hd :: _ ->
@@ -18,7 +26,12 @@ let rec runLengthEnc (xs: 'a list): (int * 'a) list =
 let runLengthDec (r: (int * 'a) list): 'a list =
   List.collect (fun t -> List.replicate (fst t) (snd t)) r
 
-let alphaNumChar: char Gen = Gen.elements <| ['a'..'z'] @ ['A'..'Z'] @ ['0'..'9']
+////////////////////////////////////////////////////////////////////////////////
+// Custom generators
+////////////////////////////////////////////////////////////////////////////////
+
+let alphaNumChar: char Gen =
+  Gen.elements <| ['a'..'z'] @ ['A'..'Z'] @ ['0'..'9']
 
 let rleItem: (int * char) Gen =
   gen {
@@ -37,6 +50,10 @@ let rec rleList(size: int): (int * char) list Gen =
   }
 
 let genOutput: (int * char) list Gen = Gen.sized rleList
+
+////////////////////////////////////////////////////////////////////////////////
+// Property test
+////////////////////////////////////////////////////////////////////////////////
 
 [<Fact>]
 let ``run length encoding round trip``() =
