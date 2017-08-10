@@ -1,6 +1,6 @@
 ## Description
 
-I've been asked to give a talk on [FsCheck](https://fscheck.github.io/FsCheck/) at the next [Manchester F# User Group](https://www.meetup.com/Manchester-F-User-Group/) meetup (August 2017). This repo contains some example code.
+I've been asked to give a talk on [FsCheck](https://fscheck.github.io/FsCheck/) at the next [Manchester F# User Group](https://www.meetup.com/Manchester-F-User-Group/) meetup (22nd August 2017). This repo contains some example code.
 
 ## Project creation
 

@@ -10,11 +10,12 @@ open FsCheck
 // Implementation code
 ////////////////////////////////////////////////////////////////////////////////
 
-let rec qsort a =
-  match a with
+let rec qsort = function
   | x :: xs ->
-    let lhs = List.filter (fun x' -> x' < x) xs
-    let rhs = List.filter (fun x' -> x' >= x) xs
+    let lt a = a < x
+    let gte a = a >= x
+    let lhs = List.filter lt xs
+    let rhs = List.filter gte xs
     qsort lhs @ List.singleton x @ qsort rhs
   | _ ->
     []
@@ -33,7 +34,8 @@ let maximum = List.reduce max
 
 [<Fact>]
 let ``prop_idempotent``() =
-  Check.QuickThrowOnFailure <| fun (xs: int list) -> qsort (qsort xs) = qsort xs
+  Check.QuickThrowOnFailure <| fun (xs: int list) ->
+    qsort (qsort xs) = qsort xs
   
 [<Fact>]
 let ``prop_minimum``() =
@@ -56,10 +58,16 @@ let ``prop_append``() =
 [<Fact>]
 let ``prop_permutation``() =
   Check.QuickThrowOnFailure <| fun (xs: int list) ->
-    let permutation xs ys = List.isEmpty (List.except xs ys) && List.isEmpty (List.except ys xs)
+    let permutation xs ys =
+      List.isEmpty (List.except xs ys) &&
+      List.isEmpty (List.except ys xs)
     permutation xs (qsort xs)
 
-// prop_ordered xs = ordered (qsort xs)
-//     where ordered []       = True
-//           ordered [x]      = True
-//           ordered (x:y:xs) = x <= y && ordered (y:xs)
+[<Fact>]
+let ``prop_ordered``() =
+  Check.QuickThrowOnFailure <| fun (xs: int list) ->
+    let rec ordered = function
+      | [] -> true
+      | [_] -> true
+      | x :: y :: xs -> x <= y && ordered (y :: xs)
+    ordered (qsort xs)
