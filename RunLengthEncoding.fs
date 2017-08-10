@@ -1,8 +1,10 @@
-module Tests
+module RunLengthEncoding
 
 open System
 open Xunit
 open FsCheck
+
+// http://booksites.artima.com/scalacheck/examples/html/ch04.html#sec6
 
 ////////////////////////////////////////////////////////////////////////////////
 // Implementation code
@@ -57,6 +59,6 @@ let genOutput: (int * char) list Gen = Gen.sized rleList
 
 [<Fact>]
 let ``run length encoding round trip``() =
-  let prop (r: (int * char) list) = runLengthEnc(runLengthDec(r)) = r
   let arb = Arb.fromGen genOutput
-  Prop.forAll arb prop |> Check.QuickThrowOnFailure
+  let p r = runLengthEnc(runLengthDec(r)) = r
+  Prop.forAll arb p |> Check.QuickThrowOnFailure

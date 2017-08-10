@@ -21,11 +21,21 @@ printfn "%A" (Gen.sample 5 10 (Gen.frequency [
                                 50, Gen.elements [21..30]
                             ]))
 
+// TODO: cover these QuickCheck things (or their nearest equivalent in FsCheck):
+//
+// listOf
+// suchThat
+// label
+// collect
+// classify
+// ==>
+
 // Given a Gen<'a> return a Gen<'b> by lifting a function of 'a -> 'b
 let map f g = Gen.map f g
 
 let flatMap f g = gen.Bind (g, f)
 
+// TODO: find a better example
 let g1 = Gen.constant 42 |> map Gen.constant
 printfn "%A" <| Gen.sample 2 2 g1
 
