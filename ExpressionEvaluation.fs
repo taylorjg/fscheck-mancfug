@@ -51,17 +51,20 @@ and genMul = gen {
     }
 
 let shrinkExpr = function
-    | Const n -> Arb.shrink n |> Seq.map Const
+    | Const n ->
+        Arb.shrink n |> Seq.map Const
     | Add (e1, e2) ->
-        let s1 = seq [e1; e2]
-        let s2 = Arb.shrink(e1) |> Seq.map (fun e1' -> Add (e1', e2))
-        let s3 = Arb.shrink(e2) |> Seq.map (fun e2' -> Add (e1, e2'))
-        Seq.concat [s1; s2; s3]
+        Seq.concat [
+            seq [e1; e2]
+            Arb.shrink(e1) |> Seq.map (fun e1' -> Add (e1', e2))
+            Arb.shrink(e2) |> Seq.map (fun e2' -> Add (e1, e2'))
+        ]
     | Mul (e1, e2) ->
-        let s1 = seq [e1; e2]
-        let s2 = Arb.shrink(e1) |> Seq.map (fun e1' -> Mul (e1', e2))
-        let s3 = Arb.shrink(e2) |> Seq.map (fun e2' -> Mul (e1, e2'))
-        Seq.concat [s1; s2; s3]
+        Seq.concat [
+            seq [e1; e2]
+            Arb.shrink(e1) |> Seq.map (fun e1' -> Mul (e1', e2))
+            Arb.shrink(e2) |> Seq.map (fun e2' -> Mul (e1, e2'))
+        ]
 
 ////////////////////////////////////////////////////////////////////////////////
 // Property test
