@@ -66,14 +66,21 @@ let shrinkExpr = function
             Arb.shrink(e2) |> Seq.map (fun e2' -> Mul (e1, e2'))
         ]
 
+type ExpressionArbitrary =
+    static member Expression() =
+        { new Arbitrary<Expression>() with
+            override x.Generator = genExpr
+            override x.Shrinker e = shrinkExpr e
+        }
+
+Arb.register<ExpressionArbitrary>() |> ignore
+
 ////////////////////////////////////////////////////////////////////////////////
 // Property test
 ////////////////////////////////////////////////////////////////////////////////
 
 [<Fact>]
 let propRewrite() =
-  let arb = Arb.fromGenShrink (genExpr, shrinkExpr)
-  let p expr =
+  Check.Quick <| fun expr ->
     let rexpr = rewrite expr
-    eval rexpr = eval expr |> Prop.label (sprintf "rewritten = %A" rexpr)
-  Prop.forAll arb p |> Check.QuickThrowOnFailure
+    eval rexpr = eval expr |@ sprintf "rewritten = %A" rexpr
