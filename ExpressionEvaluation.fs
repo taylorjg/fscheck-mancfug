@@ -50,19 +50,18 @@ and genMul = gen {
         return Mul (e1, e2)
     }
 
-// implicit val shrinkExpr: Shrink[Expression] = Shrink({
-//   case Const(n) => shrink(n) map Const
-//   case Add(e1, e2) => Stream.concat(
-//     Stream(e1, e2),
-//     shrink(e1) map (Add(_, e2)),
-//     shrink(e2) map (Add(e1, _))
-//   )
-//   case Mul(e1, e2) => Stream.concat(
-//     Stream(e1, e2),
-//     shrink(e1) map (Mul(_, e2)),
-//     shrink(e2) map (Mul(e1, _))
-//   )
-// })
+let shrinkExpr = function
+    | Const n -> Arb.shrink n |> Seq.map Const
+    | Add (e1, e2) ->
+        let s1 = seq [e1; e2]
+        let s2 = Arb.shrink(e1) |> Seq.map (fun e1' -> Add (e1', e2))
+        let s3 = Arb.shrink(e2) |> Seq.map (fun e2' -> Add (e1, e2'))
+        Seq.concat [s1; s2; s3]
+    | Mul (e1, e2) ->
+        let s1 = seq [e1; e2]
+        let s2 = Arb.shrink(e1) |> Seq.map (fun e1' -> Mul (e1', e2))
+        let s3 = Arb.shrink(e2) |> Seq.map (fun e2' -> Mul (e1, e2'))
+        Seq.concat [s1; s2; s3]
 
 ////////////////////////////////////////////////////////////////////////////////
 // Property test
@@ -75,6 +74,6 @@ and genMul = gen {
 
 [<Fact>]
 let propRewrite() =
-  let arb = Arb.fromGen genExpr
+  let arb = Arb.fromGenShrink (genExpr, shrinkExpr)
   let p expr = eval (rewrite expr) = eval expr
   Prop.forAll arb p |> Check.QuickThrowOnFailure

@@ -3,9 +3,10 @@
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ExpressionEvaluation.fs" />
-    <Compile Include="RunLengthEncoding.fs" />
+    <Compile Include="TheoryExample.fs" />
     <Compile Include="RealWorldHaskell.fs" />
+    <Compile Include="RunLengthEncoding.fs" />
+    <Compile Include="ExpressionEvaluation.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
