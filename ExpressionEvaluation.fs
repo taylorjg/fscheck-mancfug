@@ -23,7 +23,7 @@ let rec eval = function
 let rewrite = function
     | Add (e1, e2) when e1 = e2 -> Mul (Const 2, e1)
     | Mul (Const 0, e) -> Const 0
-    | Add (Const 1, e) -> e
+    | Add (Const n, e) when abs n < 5 -> e
     | e -> e
 
 ////////////////////////////////////////////////////////////////////////////////
