@@ -66,14 +66,14 @@ let shrinkExpr = function
             Arb.shrink(e2) |> Seq.map (fun e2' -> Mul (e1, e2'))
         ]
 
-type ExpressionArbitrary =
+type CustomArbitraries =
     static member Expression() =
         { new Arbitrary<Expression>() with
             override x.Generator = genExpr
             override x.Shrinker e = shrinkExpr e
         }
 
-Arb.register<ExpressionArbitrary>() |> ignore
+Arb.register<CustomArbitraries>() |> ignore
 
 ////////////////////////////////////////////////////////////////////////////////
 // Property test
