@@ -70,13 +70,10 @@ let shrinkExpr = function
 // Property test
 ////////////////////////////////////////////////////////////////////////////////
 
-// val propRewrite = forAll(genExpr) { expr =>
-//   val rexpr = rewrite(expr)
-//   (eval(rexpr) ?= eval(expr)) :| "rewritten = "+rexpr
-// }
-
 [<Fact>]
 let propRewrite() =
   let arb = Arb.fromGenShrink (genExpr, shrinkExpr)
-  let p expr = eval (rewrite expr) = eval expr
+  let p expr =
+    let rexpr = rewrite expr
+    eval rexpr = eval expr |> Prop.label (sprintf "rewritten = %A" rexpr)
   Prop.forAll arb p |> Check.QuickThrowOnFailure
