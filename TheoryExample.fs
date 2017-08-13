@@ -1,6 +1,5 @@
 module TheoryExample
 
-open System
 open Xunit
 
 [<Theory>]
