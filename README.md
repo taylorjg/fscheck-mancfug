@@ -18,7 +18,8 @@ dotnet test
 ## Links
 
 * [FsCheck](https://fscheck.github.io/FsCheck/)
-* [Test.QuickCheck package documentation](https://hackage.haskell.org/package/QuickCheck-2.10.0.1/docs/Test-QuickCheck.html)
+* [QuickCheck](https://hackage.haskell.org/package/QuickCheck)
 * [QuickCheck: An Automatic Testing Tool for Haskell](http://www.cse.chalmers.se/~rjmh/QuickCheck/manual.html)
+* [The Design and Use of QuickCheck](https://begriffs.com/posts/2017-01-14-design-use-quickcheck.html)
 * [Chapter 11 of Real World Haskell](http://book.realworldhaskell.org/read/testing-and-quality-assurance.html)
 * [ScalaCheck: The Definitive Guide](http://booksites.artima.com/scalacheck)
