@@ -23,3 +23,5 @@ dotnet test
 * [The Design and Use of QuickCheck](https://begriffs.com/posts/2017-01-14-design-use-quickcheck.html)
 * [Chapter 11 of Real World Haskell](http://book.realworldhaskell.org/read/testing-and-quality-assurance.html)
 * [ScalaCheck: The Definitive Guide](http://booksites.artima.com/scalacheck)
+* [Fuzz testing distributed systems with QuickCheck](https://making.pusher.com/fuzz-testing-distributed-systems-with-quickcheck/)
+* [Practical testing in Haskell](https://jaspervdj.be/posts/2015-03-13-practical-testing-in-haskell.html)
