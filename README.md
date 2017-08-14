@@ -11,6 +11,7 @@ mkdir fscheck-mancfug
 cd fscheck-mancfug
 dotnet new xunit -lang f#
 dotnet add package FsCheck
+dotnet add package FsCheck.Xunit
 dotnet restore
 dotnet test
 ```

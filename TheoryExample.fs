@@ -1,6 +1,8 @@
 module TheoryExample
 
 open Xunit
+open FsCheck
+open FsCheck.Xunit
 
 [<Theory>]
 [<InlineData(1, 1)>]
@@ -14,5 +16,9 @@ let additionCommutative (a: int) (b: int) =
 
 [<Fact>]
 let ``prop_additionCommutative``() =
-  FsCheck.Check.QuickThrowOnFailure <| fun (a: int) (b: int) ->
+  Check.QuickThrowOnFailure <| fun (a: int) (b: int) ->
     a + b = b + a
+
+[<Property>]
+let ``prop_additionCommutative2``(a: int) (b: int) =
+  a + b = b + a
