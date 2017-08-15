@@ -39,8 +39,62 @@ printfn "%A" (sample 5 5 (genInt |> where (fun n -> n > 10)))
 // Functor
 // ----------------------------------------------------------------------
 
-let g1 = constant 42 |> map (fun n -> n + 1)
-printfn "%A" <| sample 2 2 g1
+let s1 = Seq.singleton 42 |> Seq.map string
+printfn "%A" s1
+
+let l1 = List.singleton 42 |> List.map string
+printfn "%A" l1
+
+let a1 = Array.singleton 42 |> Array.map string
+printfn "%A" a1
+
+let g1 = Gen.constant 42 |> Gen.map string
+printfn "g1: %A" <| sample 0 1 g1
+
+// ----------------------------------------------------------------------
+// Applicative
+// ----------------------------------------------------------------------
+
+let fn n s1 s2 = String.length (sprintf "%d%s%s" n s1 s2) > 5
+
+let gn = genInt
+let gs1 = genInt |> map string
+let gs2 = genInt |> map (fun n -> (string)(n * 10))
+
+let g2 = map3 fn gn gs1 gs2
+printfn "g2: %A" <| sample 5 10 g2
+
+let g3 = gen {
+  let! n = gn
+  let! s1 = gs1
+  let! s2 = gs2
+  return fn n s1 s2
+}
+printfn "g3: %A" <| sample 5 10 g3
+
+// Gen<(a -> b -> c -> d)> <*> Gen<a>
+// Gen<(b -> c -> d)> <*> Gen<b>
+// Gen<(c -> d)> <*> Gen<c>
+// Gen<d>
+
+let g4 = constant fn <*> gn <*> gs1 <*> gs2
+printfn "g4: %A" <| sample 5 10 g4
+
+// if r is (b -> c -> d)
+// (a -> b -> c -> d)
+// (a -> r)
+// map (a -> r) Gen<a> => Gen<r>
+// map (a -> b -> c -> d) Gen<a> => Gen<(b -> c -> d)>
+
+let dummy1 = map fn gn
+
+let g5 = map fn gn <*> gs1 <*> gs2
+printfn "g5: %A" <| sample 5 10 g5
+
+let dummy2 = fn <!> gn
+
+let g6 = fn <!> gn <*> gs1 <*> gs2
+printfn "g6: %A" <| sample 5 10 g6
 
 // ----------------------------------------------------------------------
 // Monad
@@ -51,55 +105,19 @@ let oneofv1 (gens: Gen<_> seq) =
   choose(0, Seq.length gens - 1)
   |> map (fun index -> Seq.item index gens)
 
-// Implementing Gen.oneof using 'flatMap'.
+// Implementing Gen.oneof using '>>='.
 let oneofv2 (gens: Gen<_> seq) =
   choose(0, Seq.length gens - 1)
   >>= (fun index -> Seq.item index gens)
 
-let g2 = oneofv2 [constant 1; constant 2; constant 3]
-printfn "%A" <| sample 2 10 g2
+let g7 = oneofv2 [constant 1; constant 2; constant 3]
+printfn "g7: %A" <| sample 2 10 g7
 
-// ----------------------------------------------------------------------
-// Applicative
-// ----------------------------------------------------------------------
-
-let fn n s1 s2 = String.length (sprintf "%d%s%s" n s1 s2) > 5
-
-let gn = Arb.generate<int>
-let gs1 = gn |> map (string)
-let gs2 = gn |> map (fun n -> (string) <| n * 10)
-
-let g3 = map3 fn gn gs1 gs2
-printfn "%A" <| sample 5 10 g3
-
-let g4 = gen {
-  let! n = gn
-  let! s1 = gs1
-  let! s2 = gs2
-  return fn n s1 s2
+// Implementing Gen.oneof using a 'gen' computation expression.
+let oneofv3 (gens: Gen<_> seq) = gen {
+  let! index = choose(0, Seq.length gens - 1)
+  return! Seq.item index gens
 }
-printfn "%A" <| sample 5 10 g4
 
-// Gen<(a -> b -> c -> d)> <*> Gen<a>
-// Gen<(b -> c -> d)> <*> Gen<b>
-// Gen<(c -> d)> <*> Gen<c>
-// Gen<(d)>
-
-let g5 = constant fn <*> gn <*> gs1 <*> gs2
-printfn "%A" <| sample 5 10 g5
-
-// if r is (b -> c -> d)
-// (a -> b -> c -> d)
-// (a -> r)
-// map (a -> r) Gen<a> => Gen<r>
-// map (a -> b -> c -> d) Gen<a> => Gen<(b -> c -> d)>
-
-let dummy1 = map fn gn
-
-let g6 = map fn gn <*> gs1 <*> gs2
-printfn "%A" <| sample 5 10 g6
-
-let dummy2 = fn <!> gn
-
-let g7 = fn <!> gn <*> gs1 <*> gs2
-printfn "%A" <| sample 5 10 g7
+let g8 = oneofv3 [constant 1; constant 2; constant 3]
+printfn "g8: %A" <| sample 2 10 g8

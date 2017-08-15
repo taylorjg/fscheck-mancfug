@@ -18,6 +18,7 @@ dotnet test
 
 ## Links
 
+* [Slides](http://slides.com/taylorjg/fscheck)
 * [FsCheck](https://fscheck.github.io/FsCheck/)
 * [QuickCheck](https://hackage.haskell.org/package/QuickCheck)
 * [QuickCheck: An Automatic Testing Tool for Haskell](http://www.cse.chalmers.se/~rjmh/QuickCheck/manual.html)
