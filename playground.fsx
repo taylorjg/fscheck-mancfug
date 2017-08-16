@@ -105,13 +105,16 @@ let oneofv1 (gens: Gen<_> seq) =
   choose(0, Seq.length gens - 1)
   |> map (fun index -> Seq.item index gens)
 
+let g7 = oneofv1 [constant 1; constant 2; constant 3]
+printfn "g7: %A" <| sample 2 10 (g7 >>= id)
+
 // Implementing Gen.oneof using '>>='.
 let oneofv2 (gens: Gen<_> seq) =
   choose(0, Seq.length gens - 1)
   >>= (fun index -> Seq.item index gens)
 
-let g7 = oneofv2 [constant 1; constant 2; constant 3]
-printfn "g7: %A" <| sample 2 10 g7
+let g8 = oneofv2 [constant 1; constant 2; constant 3]
+printfn "g8: %A" <| sample 2 10 g8
 
 // Implementing Gen.oneof using a 'gen' computation expression.
 let oneofv3 (gens: Gen<_> seq) = gen {
@@ -119,5 +122,5 @@ let oneofv3 (gens: Gen<_> seq) = gen {
   return! Seq.item index gens
 }
 
-let g8 = oneofv3 [constant 1; constant 2; constant 3]
-printfn "g8: %A" <| sample 2 10 g8
+let g9 = oneofv3 [constant 1; constant 2; constant 3]
+printfn "g9: %A" <| sample 2 10 g9
