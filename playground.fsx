@@ -12,6 +12,7 @@ printfn "%A" (sample 5 2 genInts)
 printfn "%A" (sample 5 5 (constant 42))
 printfn "%A" (sample 5 5 (choose (1, 20)))
 printfn "%A" (sample 5 5 (elements [1..10]))
+// growingElements
 printfn "%A" (sample 5 5 (oneof [
                                 elements [1..10]
                                 elements [11..20]
@@ -22,6 +23,10 @@ printfn "%A" (sample 5 10 (frequency [
                                 30, elements [11..20]
                                 50, elements [21..30]
                             ]))
+
+// listOf
+// listOfLength
+// shuffle
 
 printfn "%A" (sample 5 5 (genInt |> where (fun n -> n > 10)))
 

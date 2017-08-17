@@ -27,3 +27,4 @@ dotnet test
 * [ScalaCheck: The Definitive Guide](http://booksites.artima.com/scalacheck)
 * [Fuzz testing distributed systems with QuickCheck](https://making.pusher.com/fuzz-testing-distributed-systems-with-quickcheck/)
 * [Practical testing in Haskell](https://jaspervdj.be/posts/2015-03-13-practical-testing-in-haskell.html)
+* [zammo](https://github.com/taylorjg/zammo)
