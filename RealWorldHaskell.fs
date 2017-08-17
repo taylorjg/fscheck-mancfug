@@ -1,8 +1,8 @@
 module RealWorldHaskell
 
 open System
-open Xunit
 open FsCheck
+open FsCheck.Xunit
 
 // http://book.realworldhaskell.org/read/testing-and-quality-assurance.html
 
@@ -32,40 +32,34 @@ let maximum = List.reduce max
 // Property test
 ////////////////////////////////////////////////////////////////////////////////
 
-[<Fact>]
-let ``prop_idempotent``() =
-  Check.QuickThrowOnFailure <| fun (xs: int list) ->
+[<Property>]
+let ``prop_idempotent`` (xs: int list) =
     qsort (qsort xs) = qsort xs
   
-[<Fact>]
-let ``prop_minimum``() =
-  Check.QuickThrowOnFailure <| fun (xs: int list) ->
+[<Property>]
+let ``prop_minimum`` (xs: int list) =
     not (List.isEmpty xs) ==>
       lazy (List.head (qsort xs) = minimum xs)
 
-[<Fact>]
-let ``prop_maximum``() =
-  Check.QuickThrowOnFailure <| fun (xs: int list) ->
+[<Property>]
+let ``prop_maximum`` (xs: int list) =
     not (List.isEmpty xs) ==>
       lazy (List.last (qsort xs) = maximum xs)
 
-[<Fact>]
-let ``prop_append``() =
-  Check.QuickThrowOnFailure <| fun (xs: int list) (ys: int list) ->
+[<Property>]
+let ``prop_append`` (xs: int list) (ys: int list) =
     (not (List.isEmpty xs) && not (List.isEmpty ys)) ==>
       lazy (List.head (qsort (xs @ ys)) = min (minimum xs) (minimum ys))
 
-[<Fact>]
-let ``prop_permutation``() =
-  Check.QuickThrowOnFailure <| fun (xs: int list) ->
+[<Property>]
+let ``prop_permutation`` (xs: int list) =
     let permutation xs ys =
       List.isEmpty (List.except xs ys) &&
       List.isEmpty (List.except ys xs)
     permutation xs (qsort xs)
 
-[<Fact>]
-let ``prop_ordered``() =
-  Check.QuickThrowOnFailure <| fun (xs: int list) ->
+[<Property>]
+let ``prop_ordered`` (xs: int list) =
     let rec ordered = function
       | [] -> true
       | [_] -> true

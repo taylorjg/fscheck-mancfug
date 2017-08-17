@@ -1,8 +1,8 @@
 module RunLengthEncoding
 
 open System
-open Xunit
 open FsCheck
+open FsCheck.Xunit
 
 // http://booksites.artima.com/scalacheck/examples/html/ch04.html#sec6
 
@@ -53,12 +53,12 @@ let rec rleList(size: int): (int * char) list Gen =
 
 let genOutput: (int * char) list Gen = Gen.sized rleList
 
+type MyRleList = static member MyRleList() = Arb.fromGen genOutput
+
 ////////////////////////////////////////////////////////////////////////////////
 // Property test
 ////////////////////////////////////////////////////////////////////////////////
 
-[<Fact>]
-let ``run length encoding round trip``() =
-  let arb = Arb.fromGen genOutput
-  let p r = runLengthEnc(runLengthDec(r)) = r
-  Prop.forAll arb p |> Check.QuickThrowOnFailure
+[<Property(Arbitrary=[| typeof<MyRleList> |])>]
+let ``run length encoding round trip`` (r: (int * char) list) =
+  runLengthEnc(runLengthDec(r)) = r
