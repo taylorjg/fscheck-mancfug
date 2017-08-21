@@ -23,7 +23,7 @@ let rec eval = function
 let rewrite = function
   | Add (e1, e2) when e1 = e2 -> Mul (Const 2, e1)
   | Mul (Const 0, e) -> Const 0
-  | Add (Const n, e) when abs(n) < 3 -> e
+  // | Add (Const 1, e) -> e
   | e -> e
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -66,19 +66,26 @@ let shrinkExpr = function
     ]
 
 type CustomArbitraries =
-  static member Expression() =
-    { new Arbitrary<Expression>() with
-      override x.Generator = genExpr
-      override x.Shrinker e = shrinkExpr e
-    }
+    static member Expression() = Arb.fromGenShrink (genExpr, shrinkExpr)
 
-Arb.register<CustomArbitraries>() |> ignore
+// type CustomArbitraries =
+//   static member Expression() =
+//     raise (System.Exception("Inside CustomArbitraries.Expression()"))
+//     { new Arbitrary<Expression>() with
+//       override x.Generator = genExpr
+//       override x.Shrinker e = shrinkExpr e
+//     }
+
+// Arb.register<CustomArbitraries>() |> ignore
 
 ////////////////////////////////////////////////////////////////////////////////
 // Property test
 ////////////////////////////////////////////////////////////////////////////////
 
-[<Property>]
-let propRewrite expr =
-  let rexpr = rewrite expr
-  eval rexpr = eval expr |@ sprintf "rewritten = %A" rexpr
+[<Properties(Arbitrary=[| typeof<CustomArbitraries> |])>]
+module ExpressionEvaluationWithProperties =
+
+  [<Property(MaxTest = 1000)>]
+  let propRewrite expr =
+    let rexpr = rewrite expr
+    eval rexpr = eval expr |@ sprintf "rewritten = %A" rexpr

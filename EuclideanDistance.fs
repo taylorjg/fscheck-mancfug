@@ -17,32 +17,39 @@ type Point = {
 let distance p1 p2 = sqrt (pown (p2.x - p1.x) 2 + pown (p2.y - p1.y) 2)
 
 ////////////////////////////////////////////////////////////////////////////////
-// Overrides
+// Custom generators
 ////////////////////////////////////////////////////////////////////////////////
 
-type NonNanOrInfiniteFloat =
-  static member NonNanOrInfiniteFloat() =
-    Arb.Default.Float()
-      |> Arb.filter (fun f ->
-        not <| System.Double.IsNaN(f) &&
-        not <| System.Double.IsInfinity(f))
+let genPoint =
+  let genNormalFloat = Arb.Default.NormalFloat().Generator
+  gen {
+    let! x = genNormalFloat
+    let! y = genNormalFloat
+    return { x = float x; y = float y }
+  }
+
+type CustomArbitraries =
+    static member Point() = Arb.fromGen genPoint
 
 ////////////////////////////////////////////////////////////////////////////////
 // Property test
 ////////////////////////////////////////////////////////////////////////////////
 
-[<Property(Arbitrary = [| typeof<NonNanOrInfiniteFloat> |])>]
-let propNonNegativity x y =
-  distance x y >= 0.0
+[<Properties(Arbitrary=[| typeof<CustomArbitraries> |])>]
+module EuclideanDistanceWithProperties = 
 
-[<Property(Arbitrary = [| typeof<NonNanOrInfiniteFloat> |])>]
-let propIdentity x =
-  distance x x = 0.0
+  [<Property>]
+  let propNonNegativity x y =
+    distance x y >= 0.0
 
-[<Property(Arbitrary = [| typeof<NonNanOrInfiniteFloat> |])>]
-let propSymmetry x y =
-  distance x y = distance y x
+  [<Property>]
+  let propIdentity x =
+    distance x x = 0.0
 
-[<Property(Arbitrary = [| typeof<NonNanOrInfiniteFloat> |])>]
-let propTriangleInequality x y z =
-  distance x z <= distance x y + distance y z
+  [<Property>]
+  let propSymmetry x y =
+    distance x y = distance y x
+
+  [<Property>]
+  let propTriangleInequality x y z =
+    distance x z <= distance x y + distance y z
