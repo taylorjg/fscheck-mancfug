@@ -34,34 +34,34 @@ let maximum = List.reduce max
 
 [<Property>]
 let ``prop_idempotent`` (xs: int list) =
-    qsort (qsort xs) = qsort xs
+  qsort (qsort xs) = qsort xs
   
 [<Property>]
 let ``prop_minimum`` (xs: int list) =
-    not (List.isEmpty xs) ==>
-      lazy (List.head (qsort xs) = minimum xs)
+  not (List.isEmpty xs) ==>
+    lazy (List.head (qsort xs) = minimum xs)
 
 [<Property>]
 let ``prop_maximum`` (xs: int list) =
-    not (List.isEmpty xs) ==>
-      lazy (List.last (qsort xs) = maximum xs)
+  not (List.isEmpty xs) ==>
+    lazy (List.last (qsort xs) = maximum xs)
 
 [<Property>]
 let ``prop_append`` (xs: int list) (ys: int list) =
-    (not (List.isEmpty xs) && not (List.isEmpty ys)) ==>
-      lazy (List.head (qsort (xs @ ys)) = min (minimum xs) (minimum ys))
+  (not (List.isEmpty xs) && not (List.isEmpty ys)) ==>
+    lazy (List.head (qsort (xs @ ys)) = min (minimum xs) (minimum ys))
 
 [<Property>]
 let ``prop_permutation`` (xs: int list) =
-    let permutation xs ys =
-      List.isEmpty (List.except xs ys) &&
-      List.isEmpty (List.except ys xs)
-    permutation xs (qsort xs)
+  let permutation xs ys =
+    List.isEmpty (List.except xs ys) &&
+    List.isEmpty (List.except ys xs)
+  permutation xs (qsort xs)
 
 [<Property>]
 let ``prop_ordered`` (xs: int list) =
-    let rec ordered = function
-      | [] -> true
-      | [_] -> true
-      | x :: y :: xs -> x <= y && ordered (y :: xs)
-    ordered (qsort xs)
+  let rec ordered = function
+    | [] -> true
+    | [_] -> true
+    | x :: y :: xs -> x <= y && ordered (y :: xs)
+  ordered (qsort xs)

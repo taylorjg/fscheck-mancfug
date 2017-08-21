@@ -10,8 +10,8 @@ open FsCheck.Xunit
 ////////////////////////////////////////////////////////////////////////////////
 
 type Point = {
-    x: float
-    y: float
+  x: float
+  y: float
 }
 
 let distance p1 p2 = sqrt (pown (p2.x - p1.x) 2 + pown (p2.y - p1.y) 2)
@@ -29,7 +29,7 @@ let genPoint =
   }
 
 type CustomArbitraries =
-    static member Point() = Arb.fromGen genPoint
+  static member Point() = Arb.fromGen genPoint
 
 ////////////////////////////////////////////////////////////////////////////////
 // Property test

@@ -66,7 +66,7 @@ let shrinkExpr = function
     ]
 
 type CustomArbitraries =
-    static member Expression() = Arb.fromGenShrink (genExpr, shrinkExpr)
+  static member Expression() = Arb.fromGenShrink (genExpr, shrinkExpr)
 
 // type CustomArbitraries =
 //   static member Expression() =
