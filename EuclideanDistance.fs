@@ -38,17 +38,21 @@ type CustomArbitraries =
 [<Properties(Arbitrary=[| typeof<CustomArbitraries> |])>]
 module EuclideanDistanceWithProperties = 
 
+  let tolerance = 0.001
+
+  let (=~) a b = abs(a - b) < tolerance
+
   [<Property>]
   let propNonNegativity x y =
     distance x y >= 0.0
 
   [<Property>]
   let propIdentity x =
-    distance x x = 0.0
+    distance x x =~ 0.0
 
   [<Property>]
   let propSymmetry x y =
-    distance x y = distance y x
+    distance x y =~ distance y x
 
   [<Property>]
   let propTriangleInequality x y z =
