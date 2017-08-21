@@ -13,8 +13,5 @@ open FsCheck.Xunit
 [<InlineData(0, 10)>]
 let additionCommutative (a: int) (b: int) = Assert.Equal(a + b, b + a)
 
-[<Fact>]
-let propAdditionCommutative() = Check.QuickThrowOnFailure <| fun a b -> a + b = b + a
-
 [<Property>]
-let propAdditionCommutative2 a b = a + b = b + a
+let propAdditionCommutative a b = a + b = b + a
