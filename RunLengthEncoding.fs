@@ -53,12 +53,16 @@ let rec rleList(size: int): (int * char) list Gen =
 
 let genOutput: (int * char) list Gen = Gen.sized rleList
 
-type MyRleList = static member MyRleList() = Arb.fromGen genOutput
+type CustomArbitraries =
+  static member RleList() = Arb.fromGen genOutput
 
 ////////////////////////////////////////////////////////////////////////////////
 // Property test
 ////////////////////////////////////////////////////////////////////////////////
 
-[<Property(Arbitrary=[| typeof<MyRleList> |])>]
-let ``run length encoding round trip`` (r: (int * char) list) =
-  runLengthEnc(runLengthDec(r)) = r
+[<Properties(Arbitrary=[| typeof<CustomArbitraries> |])>]
+module RunLengthEncodingWithProperties =
+
+  [<Property>]
+  let ``run length encoding round trip`` (r: (int * char) list) =
+    runLengthEnc(runLengthDec(r)) = r
