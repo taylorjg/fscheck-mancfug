@@ -1,6 +1,5 @@
 module ExpressionEvaluation
 
-open System
 open FsCheck
 open FsCheck.Xunit
 
@@ -36,8 +35,8 @@ let genConst = Gen.choose (0, 10) |> Gen.map Const
 let rec genExpr = Gen.sized <| fun sz ->
   Gen.frequency [
     sz, genConst
-    sz - (int) (Math.Sqrt ((float)sz)), Gen.resize (sz/2) genAdd
-    sz - (int) (Math.Sqrt ((float)sz)), Gen.resize (sz/2) genMul
+    sz - int (sqrt (float sz)), Gen.resize (sz/2) genAdd
+    sz - int (sqrt (float sz)), Gen.resize (sz/2) genMul
   ]
 and genAdd = gen {
     let! e1 = genExpr
