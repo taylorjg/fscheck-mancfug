@@ -6,29 +6,34 @@ open Gen
 let genInt = Arb.generate<int>
 let genInts = Arb.generate<int list>
 
-printfn "%A" (sample 2 5 genInts)
-printfn "%A" (sample 5 2 genInts)
+printfn "genInts 2 5: %A" (sample 2 5 genInts)
+printfn "genInts 5 2: %A" (sample 5 2 genInts)
 
-printfn "%A" (sample 5 5 (constant 42))
-printfn "%A" (sample 5 5 (choose (1, 20)))
-printfn "%A" (sample 5 5 (elements [1..10]))
-// growingElements
-printfn "%A" (sample 5 5 (oneof [
-                                elements [1..10]
-                                elements [11..20]
-                                elements [21..30]
-                            ]))
-printfn "%A" (sample 5 10 (frequency [
-                                20, elements [1..10]
-                                30, elements [11..20]
-                                50, elements [21..30]
-                            ]))
+printfn "constant: %A" (sample 5 5 (constant 42))
 
-// listOf
-// listOfLength
-// shuffle
+printfn "choose: %A" (sample 5 5 (choose (1, 20)))
 
-printfn "%A" (sample 5 5 (genInt |> where (fun n -> n > 10)))
+printfn "elements: %A" (sample 5 5 (elements [1..10]))
+
+printfn "oneof: %A" (sample 5 5 (oneof [
+                                  elements [1..10]
+                                  elements [11..20]
+                                  elements [21..30]
+                                ]))
+
+printfn "frequency: %A" (sample 5 10 (frequency [
+                                        20, elements [1..10]
+                                        30, elements [11..20]
+                                        50, elements [21..30]
+                                      ]))
+
+printfn "listOf: %A" (sample 5 5 (choose (1, 10) |> Gen.listOf))
+
+printfn "listOfLength: %A" (sample 5 5 (choose (1, 10) |> Gen.listOfLength 5))
+
+printfn "shuffle: %A" (sample 5 5 (shuffle [1;2;3;4;5]))
+
+printfn "where: %A" (sample 5 5 (genInt |> where (fun n -> n > 10)))
 
 // label
 
