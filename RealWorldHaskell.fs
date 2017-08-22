@@ -12,10 +12,7 @@ open FsCheck.Xunit
 
 let rec qsort = function
   | x :: xs ->
-    let lt a = a < x
-    let gte a = a >= x
-    let lhs = List.filter lt xs
-    let rhs = List.filter gte xs
+    let lhs, rhs = List.partition (fun x' -> x' < x) xs
     qsort lhs @ List.singleton x @ qsort rhs
   | _ ->
     []
